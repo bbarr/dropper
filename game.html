@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <style>
+    canvas {
+      position: absolute;
+    }
+    #fore {
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game">
+    <div><span id="score">0</span> points</div>
+    <div><span id="accuracy">0</span>% accuracy</div>
+    <canvas width="480" height="220" id="back"></canvas>
+    <canvas width="480" height="220" id="fore"></canvas>
+  </div>
+
+  <script src="js/vendor/require.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    require([
+      'gl',
+      'lib/game',
+      'lib/plane',
+      'lib/screen',
+      'lib/target',
+      'lib/shooter',
+      'lib/package'
+    ], function(gl, Game, Plane, Screen, Target, Shooter, Pkg) {
+
+      var back_canvas = document.getElementById('back'),
+          fore_canvas = document.getElementById('fore'),
+          back_ctx = back_canvas.getContext('2d'),
+          fore_ctx = fore_canvas.getContext('2d'),
+          game = new Game({ fps: 40 }),
+          screen = new Screen({ 
+            game: game, 
+            ctx: back_ctx, 
+            width: back_canvas.width,
+            height: back_canvas.height
+          });
+
+      game.timer.every('2..3').seconds(function() {
+        new Target({ ctx: fore_ctx, game: game, width: 30, height: 10, position: new gl.Vector(fore_canvas.width, fore_canvas.height - 10) });
+      });
+
+      game.timer.every('3..5').seconds(function() {
+        new Shooter({ ctx: fore_ctx, game: game, width: 10, height: 10, position: new gl.Vector(fore_canvas.width, fore_canvas.height - 10) });
+      });
+      
+      game.screen = screen;
+      var plane = new Plane({ game: game, ctx: fore_ctx, width: 10, height: 10 });
+      game.plane = plane;
+
+      // direction controls
+      document.addEventListener('keydown', function(e) {
+        if (e.keyCode === 37) {
+          plane.velocity.x--;
+        } else if (e.keyCode === 39) {
+          plane.velocity.x++;
+        } else if (e.keyCode === 32) {
+          plane.drop();
+        }
+      });
+
+      var score = 0,
+          scoring_packages = 0;
+      game.on('score:update', function(delta) {
+        document.getElementById('score').innerHTML = ((score += delta) + ' +' + delta);
+        scoring_packages++;
+        document.getElementById('accuracy').innerHTML = Math.round(scoring_packages / Pkg.count * 10000) / 100
+      });
+
+      window.game = game;
+      game.timer.run();
+      //game.timer.after(3).seconds(game.timer.pause, game.timer);
+    });
+  </script>
+</body>
+</html>
