@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns     = "http://www.w3.org/ns/widgets"
+  xmlns:gap = "http://phonegap.com/ns/1.0"
+  id        = "com.brendanbarr.dropper"
+  version   = "0.0.1">
+
+  <name>Dropper</name>
+
+  <description>
+    A game of dropping things. And not getting shot.
+  </description>
+
+  <author href="http://brendanbarr.com" email="bbarr1384@gmail.com">
+    Brendan Barr
+  </author>
+
+  <feature name="http://api.phonegap.com/1.0/device" />
+
+  <preference name="phonegap-version" value="2.2.0" />
+  <preference name="orientation"      value="landscape" />
+  <preference name="target-device"    value="universal" />
+  <preference name="fullscreen"       value="true" />
+  <preference name="webviewbounce" value="false" />
+</widget>
